@@ -3,16 +3,27 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AdminModule } from './admin/admin.module';
+import { HomeModule } from './home/home.module';
+import { GithubModule } from './github/github.module';
+import { SharedModule } from './shared';
+import { FooterComponent } from './shared/layout/footer/footer.component';
+import { HeaderComponent } from './shared/layout/header/header.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+// import { NotFoundComponent } from './not-found.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    HomeModule,
+    AdminModule,
+    GithubModule,
+    SharedModule,
+
+    AppRoutingModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
