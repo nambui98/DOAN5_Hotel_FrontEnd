@@ -1,6 +1,6 @@
 # ĐỪNG CLONE, LỖI TÙM LUM ĐẤY :satisfied:
 
-Liên hệ Nam Bùi [nambui][facebook]
+# Liên hệ NAM BÙI [![N|Solid](https://res.cloudinary.com/daxdtvl7i/image/upload/c_scale,w_162/v1600543450/PicsArt_09-20-02.12.49_psks0z.jpg)](https://www.facebook.com/songoku.bui/) để gỡ lỗi nha :joy: :stuck_out_tongue_closed_eyes:
 
 # DOAN5_Angular_FrontEnd
 
@@ -29,4 +29,3 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-[facebook]: https://www.facebook.com/songoku.bui/
