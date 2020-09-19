@@ -1,6 +1,6 @@
 # ĐỪNG CLONE, LỖI TÙM LUM ĐẤY :satisfied:
 
-# Liên hệ Nam Bùi [nambui][facebook]
+Liên hệ Nam Bùi [nambui][facebook]
 
 # DOAN5_Angular_FrontEnd
 
