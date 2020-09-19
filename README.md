@@ -1,4 +1,4 @@
-# ĐỪNG CLONE, LỖI TÙM LUM ĐẤY :V
+# ĐỪNG CLONE, LỖI TÙM LUM ĐẤY :satisfied:
 
 # DOAN5_Angular_FrontEnd
 
