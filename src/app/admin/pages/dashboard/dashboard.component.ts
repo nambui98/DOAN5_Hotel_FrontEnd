@@ -1,4 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
+import { TokenStorageService } from 'src/app/core/services/token-storage.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,10 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 export class DashboardComponent implements OnInit {
   title = '';
   total = 500;
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private token: TokenStorageService
+  ) {}
   ngOnInit() {}
   ngAfterViewInit() {
     this.loadScripts();
