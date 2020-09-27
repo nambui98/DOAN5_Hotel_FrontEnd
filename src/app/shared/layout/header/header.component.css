@@ -1,4 +1,4 @@
-ul {
+/* ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -20,4 +20,11 @@ li a {
 
 li a:hover {
   background-color: #111111;
+} */
+.header {
+  height: 80px;
+}
+.nav-link {
+  color: #acb0c3;
+  font-size: 15px;
 }

@@ -1,0 +1,12 @@
+<p-sidebar [(visible)]="visible" (onHide)="ChangeAb()" position="right" [baseZIndex]="1000">
+    <img src="assets/assets/img/{{room?room.image:''}}" height="150px" class="card-img-top" alt="">
+    <h1 style="font-weight:normal">{{room?room.name:''}}</h1>
+    <!-- <p-button type="button" (click)="ChangeAb()" label="Save" styleClass="p-button-success"></p-button>
+    <p-button type="button" (click)="ChangeAb()" label="Cancel" styleClass="p-button-secondary"></p-button> -->
+    <button class="btn btn-success mb-2">Success</button>
+    <button class="btn btn-primary mb-2">Đặt trước</button>
+    <button class="btn btn-warning mb-2">Warning</button>
+    <button class="btn btn-danger mb-2">Danger</button>
+    <button class="btn btn-dark mb-2">Dark</button>
+
+</p-sidebar>

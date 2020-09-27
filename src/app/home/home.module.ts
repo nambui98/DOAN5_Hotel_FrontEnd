@@ -5,6 +5,7 @@ import { ClientComponent } from './client.component';
 import { AboutUsComponent, ContactUsComponent, HomeComponent } from './pages';
 
 import { SharedModule } from '../shared';
+import { OrderComponent } from './pages/order/order.component';
 
 @NgModule({
   imports: [HomeRoutingModule, SharedModule],
@@ -14,6 +15,7 @@ import { SharedModule } from '../shared';
     AboutUsComponent,
     ContactUsComponent,
     HomeComponent,
+    OrderComponent,
   ],
 })
 export class HomeModule {}
