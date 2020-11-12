@@ -2,25 +2,38 @@
     <div class="row">
 
         <div class="col-sm-2">
-            <nav id="sidebar">
+            <nav id="sidebar" style="position: fixed;">
                 <div class="shadow-bottom"></div>
 
                 <ul class="list-unstyled menu-categories" id="accordionExample">
                     <li class="menu">
-                        <a routerLinkActive="active" data-active="true" aria-expanded="true" class="dropdown-toggle">
+                        <a routerLinkActive="active"  (click)="getByFloor(0)" [ngClass]="{'dropdown-toggle':true, 'active':activeFloor===0?true:false}">
                             <div class="">
-                                <span>Tầng 1</span>
+                                <span>Tất cả</span>
                             </div>
                         </a>
                     </li>
-                    <li class="menu">
+                    <ng-container *ngFor="let floor of floors">
+                        <li class="menu">
+                            <a routerLinkActive="active" (click)="getByFloor(floor.id)" data-toggle="collapse"
+                            [ngClass]="{'dropdown-toggle':true, 'active':activeFloor===floor.id?true:false}"
+                             aria-expanded="false"
+                                class="dropdown-toggle">
+                                <div class="">
+                                    <span>{{floor.name}}</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ng-container>
+                   
+                    <!-- <li class="menu">
                         <a routerLinkActive="active" data-toggle="collapse" aria-expanded="false"
                             class="dropdown-toggle">
                             <div class="">
                                 <span>Tầng 2</span>
                             </div>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </nav>
         </div>
@@ -33,18 +46,31 @@
                     </button> -->
                     <ng-container *ngFor="let room of rooms">
                         <div class="card component-card_2"
-                            [ngStyle]="{'border-color':room.status===1?
-                        '#f1c40f':room.status===2? '#e74c3c':room.status===3? '#3498db':room.status===4? '#34495e':room.status===4? '#2ecc71':''}"
+                            [ngStyle]="{'border-color': 
+                            room.status===1? '#2ecc71':
+                            room.status===2? '#34495e':
+                            room.status===3? '#f1c40f':
+                            room.status===4? '#e74c3c':
+                            room.status===5? '#3498db':
+                            room.status===6? '#a978db':
+                            ''}"
                             [ngClass]="room.id===active?'activeCard':''" (click)="changeStatusSideBar(room)">
-                            <img src="assets/assets/img/{{room.image}}" height="150px" class="card-img-top"
+                            <img src="{{urlAPI}}imgs/{{room.image}}" height="150px" class="card-img-top"
                                 alt="widget-card-2">
-                            <div class="card-body">
+                            <img *ngIf="room.type===1" src="assets/assets/img/vip8.png" class="roomvip" height="50px"
+                                alt="widget-card-2">
+                            <div class="card-body" style="text-align: center;" >
                                 <h5 class="card-title">{{room.name}}</h5>
-                                <p-button type="button" (click)="changeStatusSideBar(room)" icon="pi pi-arrow-left">
+                                <countdown style="font-size: 15px;" 
+                                *ngIf="room.status===2"
+                                (event)="handleEvent($event, room)"
+                                [config]="{leftTime: room.booking? room.booking.timeCaculatar:0}">
+                            </countdown>
+                                <!-- <p-button type="button" (click)="changeStatusSideBar(room)" icon="pi pi-arrow-left">
                                 </p-button>
 
                                 <p-button type="button" label="Save" styleClass="p-button-success">
-                                </p-button>
+                                </p-button> -->
 
                             </div>
 
@@ -52,114 +78,7 @@
                         </div>
                     </ng-container>
 
-                    <!-- <div class="card component-card_2 activeCard" style="border-color:  #f1c40f;"
-                        (click)="changeStatusSideBar()">
-                        <img src="assets/assets/img/normal_11-571252810.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Tên phòng</h5>
-                            <p-button type="button" (click)="changeStatusSideBar()" icon="pi pi-arrow-left"></p-button>
-
-                            <p-button type="button" label="Save" styleClass="p-button-success">
-                            </p-button>
-
-                        </div>
-
-
-                    </div> -->
-
-                    <!-- <div class="card component-card_2" style="border-color:  #e74c3c;" (click)="changeStatusSideBar()">
-                        <img src="assets/assets/img/normal_11-571252810.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Tên phòng</h5>
-                            <p-button type="button" (click)="changeStatusSideBar()" icon="pi pi-arrow-left"></p-button>
-                          
-                            <p-button type="button" label="Save" styleClass="p-button-success">
-                            </p-button>
-
-                        </div>
-
-
-                    </div>
-                    <div class="card component-card_2" style="border-color:  #3498db;" (click)="changeStatusSideBar()">
-                        <img src="assets/assets/img/normal_11-571252810.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Tên phòng</h5>
-                            <p-button type="button" (click)="changeStatusSideBar()" icon="pi pi-arrow-left"></p-button>
-                          
-                            <p-button type="button" label="Save" styleClass="p-button-success">
-                            </p-button>
-
-                        </div>
-
-
-                    </div>
-                    <div class="card component-card_2" style="border-color:  #34495e;" (click)="changeStatusSideBar()">
-                        <img src="assets/assets/img/normal_11-571252810.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Tên phòng</h5>
-                            <p-button type="button" (click)="changeStatusSideBar()" icon="pi pi-arrow-left"></p-button>
-                          
-                            <p-button type="button" label="Save" styleClass="p-button-success">
-                            </p-button>
-
-                        </div>
-
-
-                    </div>
-                    <div class="card component-card_2" style="border-color:  #2ecc71;" (click)="changeStatusSideBar()">
-                        <img src="assets/assets/img/normal_11-571252810.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Tên phòng</h5>
-                            <p-button type="button" (click)="changeStatusSideBar()" icon="pi pi-arrow-left"></p-button>
-                          
-                            <p-button type="button" label="Save" styleClass="p-button-success">
-                            </p-button>
-
-                        </div>
-
-
-                    </div> -->
-                    <div class="card component-card_2">
-                        <img src="assets/assets/img/grid-blog-style-3.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">CLI Based</h5>
-
-                            <a href="#" class="btn btn-primary">Explore More</a>
-                        </div>
-                    </div>
-                    <div class="card component-card_2">
-                        <img src="assets/assets/img/grid-blog-style-3.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">CLI Based</h5>
-
-                            <a href="#" class="btn btn-primary">Explore More</a>
-                        </div>
-                    </div>
-                    <div class="card component-card_2">
-                        <img src="assets/assets/img/grid-blog-style-3.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">CLI Based</h5>
-
-                            <a href="#" class="btn btn-primary">Explore More</a>
-                        </div>
-                    </div>
-                    <div class="card component-card_2">
-                        <img src="assets/assets/img/grid-blog-style-3.jpg" height="150px" class="card-img-top"
-                            alt="widget-card-2">
-                        <div class="card-body">
-                            <h5 class="card-title">CLI Based</h5>
-
-                            <a href="#" class="btn btn-primary">Explore More</a>
-                        </div>
-                    </div>
+                    
 
                 </div>
             </div>
@@ -167,5 +86,5 @@
     </div>
 
 </div>
-<app-right-sidebar (visibleChanged)="visibleChanged($event)" [room]="RoomActive" [visible]="visibleSidebar">
+<app-right-sidebar (visibleChanged)="visibleChanged($event)" [getResetData]="getAll.bind(this)" [room]="RoomActive"  [visible]="visibleSidebar">
 </app-right-sidebar>

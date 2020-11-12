@@ -1,0 +1,137 @@
+<p-toast [baseZIndex]="1000"></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Thêm mới" icon="pi pi-plus" class="p-button-success p-mr-2"
+                (click)="openNew()"></button>
+            
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Xuất excel" icon="pi pi-file-excel" (click)="exportExcel()"
+                class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="furnitures" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['name','country.name','representative.name','status']" 
+        [rowHover]="true" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Quản lý phòng</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" >
+            <tr>
+                <th style="width: 5rem">
+                    STT
+                </th>
+                <th pSortableColumn="name">Tên <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="price">Số lượng <p-sortIcon field="quantity"></p-sortIcon>
+                </th>
+                <th pSortableColumn="type">Loại <p-sortIcon field="type"></p-sortIcon>
+                </th>
+               
+                <th pSortableColumn="status">Trạng thái <p-sortIcon field="status"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-furniture let-rowIndex="rowIndex">
+            <tr>
+                <td>
+                    {{rowIndex}}
+                </td>
+                <td>{{furniture.name}}</td>
+                <td>{{furniture.quantity}}</td>
+                <!-- <td>{{product.price | currency:'USD'}}</td> -->
+                <td>{{furniture.type===1?"Vip":"Thường"}}</td>
+              
+                <td><span
+                        [class]="'product-badge status-' + furniture.status">{{furniture.status}}</span>
+                </td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="edit(furniture)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="delete(furniture)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                Tổng {{furnitures ? furnitures.length : 0 }} đồ đạc.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="furnitureDialog" [style]="{width: '60%'}" [baseZIndex]="1000" [(header)]="modalName"
+    [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="name">Name</label>
+            <input type="text" pInputText id="name" [(ngModel)]="furniture.name" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !furniture.name">Name is required.</small>
+        </div>
+       
+     
+        <div class="p-field">
+            <label class="p-mb-3">Type</label>
+            <div class="p-formgrid p-grid">
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category1" name="type" value={{1}} [(ngModel)]="furniture.type">
+                    </p-radioButton>
+                    <label for="category1">Vip</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category2" name="type" value={{2}} [(ngModel)]="furniture.type">
+                    </p-radioButton>
+                    <label for="category2">Thường</label>
+                </div>
+                
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="minmax">Số lượng</label>
+                <p-inputNumber [(ngModel)]="furniture.quantity" mode="decimal" [showButtons]="true" inputId="minmax" [min]="0" [max]="1000">
+                </p-inputNumber>
+        </div>
+        <div class="p-field">
+            <label class="p-mb-3">Trạng thái</label>
+            <div class="p-formgrid p-grid">
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category2" name="type" value={{0}} [(ngModel)]="furniture.status">
+                    </p-radioButton>
+                    <label for="category2">Tất cả</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category1" name="type" value={{1}} [(ngModel)]="furniture.status">
+                    </p-radioButton>
+                    <label for="category1">Hoạt động</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category2" name="type" value={{2}} [(ngModel)]="furniture.status">
+                    </p-radioButton>
+                    <label for="category2">Không hoạt động</label>
+                </div>
+                
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}" [baseZIndex]="1000"></p-confirmDialog>

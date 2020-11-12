@@ -26,5 +26,5 @@ li a:hover {
 }
 .nav-link {
   color: #acb0c3;
-  font-size: 15px;
+  font-size: 20px !important;
 }

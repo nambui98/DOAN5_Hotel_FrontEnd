@@ -1,26 +1,16 @@
-<p-toast></p-toast>
+<p-toast [baseZIndex]="1000"></p-toast>
 
 <div class="card">
     <p-toolbar styleClass="p-mb-4">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
+            <button pButton pRipple label="Thêm mới" icon="pi pi-plus" class="p-button-success p-mr-2"
                 (click)="openNew()"></button>
-            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
-                (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+            
         </ng-template>
 
         <ng-template pTemplate="right">
-            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
-                class="p-mr-2 p-d-inline-block"></p-fileUpload>
-            <!-- <button pButton pRipple label="Export" icon="pi pi-upload" (click)="exportPdf()"
-                class="p-button-help"></button> -->
-
-            <button pButton pRipple label="Export" icon="pi pi-file-excel" (click)="exportExcel()"
+            <button pButton pRipple label="Xuất excel" icon="pi pi-file-excel" (click)="exportExcel()"
                 class="p-button-success p-mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-            <button pButton pRipple label="Export" icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning"
-                pTooltip="PDF" tooltipPosition="bottom"></button>
-
-
         </ng-template>
     </p-toolbar>
 
@@ -30,7 +20,7 @@
         [showCurrentPageReport]="true">
         <ng-template pTemplate="caption">
             <div class="p-d-flex p-ai-center p-jc-between">
-                <h5 class="p-m-0">Manage Products</h5>
+                <h5 class="p-m-0">Quản lý phòng</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
@@ -38,403 +28,178 @@
                 </span>
             </div>
         </ng-template>
-        <ng-template pTemplate="header">
+        <ng-template pTemplate="header" >
             <tr>
-                <th style="width: 3rem">
-                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                <th style="width: 5rem">
+                    STT
                 </th>
-                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon>
+                <th pSortableColumn="name">Tên <p-sortIcon field="name"></p-sortIcon>
                 </th>
-                <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon>
+                <th pSortableColumn="price">Tầng <p-sortIcon field="price"></p-sortIcon>
                 </th>
-                <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon>
+                <th pSortableColumn="type">Loại <p-sortIcon field="type"></p-sortIcon>
                 </th>
-                <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon>
+                <th pSortableColumn="type">Hình ảnh <p-sortIcon field="image"></p-sortIcon>
                 </th>
-                <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon>
+                <!-- <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon>
+                </th> -->
+                <th pSortableColumn="status">Trạng thái <p-sortIcon field="status"></p-sortIcon>
                 </th>
                 <th></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product>
+        <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
             <tr>
                 <td>
-                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                    {{rowIndex}}
                 </td>
                 <td>{{product.name}}</td>
-                <td>{{product.price | currency:'USD'}}</td>
-                <td>{{product.category}}</td>
-                <td>
+                <td>{{product.floor.name}}</td>
+                <!-- <td>{{product.price | currency:'USD'}}</td> -->
+                <td>{{product.type===1?"Vip":"Thường"}}</td>
+                <td><img src="{{urlAPI}}imgs/{{product.image}}" [alt]="product.name" width="100" class="p-shadow-4" /></td>
+
+                <!-- <td>
                     <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-                </td>
+                </td> -->
                 <td><span
-                        [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
+                        [class]="'product-badge status-' + product.status">{{product.status}}</span>
                 </td>
                 <td>
                     <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
                         (click)="editProduct(product)"></button>
-                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning p-mr-2"
                         (click)="deleteProduct(product)"></button>
+                        <button pButton pRipple icon="pi pi-tag" class="p-button-rounded p-button-warning"
+                        (click)="setUpPrice(product)"></button>
                 </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="p-d-flex p-ai-center p-jc-between">
-                In total there are {{products ? products.length : 0 }} products.
+                Tổng {{products ? products.length : 0 }} phòng.
             </div>
         </ng-template>
     </p-table>
 </div>
 
-<p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" [baseZIndex]="1000" header="Product Details"
+<p-dialog [(visible)]="productDialog" [style]="{width: '60%'}" [baseZIndex]="1000" [(header)]="modalName"
     [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <div class="p-field">
-            <label for="name">Name</label>
-            <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
-            <small class="p-invalid" *ngIf="submitted && !product.name">Name is required.</small>
-        </div>
-        <div class="p-field">
-            <label for="description">Description</label>
-            <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3"
-                cols="20"></textarea>
-        </div>
-
-        <div class="p-field">
-            <label class="p-mb-3">Category</label>
+        <ng-container *ngIf="modalType!=='setUp'">
+            <div class="p-field">
+                <label for="name">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !product.name">Name is required.</small>
+            </div>
+            <div class="p-field">
+                <label for="quantity">Tầng</label>
+                <p-dropdown [options]="floors" [(ngModel)]="product.floor"  placeholder="Chọn tầng" optionLabel="name" [showClear]="true"></p-dropdown>
+                <!-- <p-dropdown *ngIf="!product.idFloor" [options]="floors" [(ngModel)]="selectedFloor" placeholder="Select a City" optionLabel="name" [showClear]="true"></p-dropdown> -->
+            </div>
+            <div class="p-field">
+                <label for="quantity">Ảnh</label>
+                <p-fileUpload #fileInput name="files" (onSelect)="upLoad_getBase64($event)"  (onUpload)="onUpload($event)"
+                showCancelButton
+                showUploadButton
+    
+                class="p-fileupload-buttonbar"
+                previewWidth="100"
+                 accept="image/*" maxFileSize="1000000">
+                
+                <ng-template pTemplate="content" >
+                    <img *ngIf="productImage_preview" style="padding: 1rem 1rem;" src="{{urlAPI}}imgs/{{productImage_preview}}" width="100px" >
+                </ng-template>
+        </p-fileUpload>
+            </div>
+            <div class="p-field">
+                <label class="p-mb-3">Type</label>
+                <div class="p-formgrid p-grid">
+                    <div class="p-field-radiobutton p-col-6">
+                        <p-radioButton id="category1" name="type" value={{1}} [(ngModel)]="product.type">
+                        </p-radioButton>
+                        <label for="category1">Vip</label>
+                    </div>
+                    <div class="p-field-radiobutton p-col-6">
+                        <p-radioButton id="category2" name="type" value={{2}} [(ngModel)]="product.type">
+                        </p-radioButton>
+                        <label for="category2">Thường</label>
+                    </div>
+                    
+                </div>
+            </div>
+    
             <div class="p-formgrid p-grid">
-                <div class="p-field-radiobutton p-col-6">
-                    <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category">
-                    </p-radioButton>
-                    <label for="category1">Accessories</label>
-                </div>
-                <div class="p-field-radiobutton p-col-6">
-                    <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category">
-                    </p-radioButton>
-                    <label for="category2">Clothing</label>
-                </div>
-                <div class="p-field-radiobutton p-col-6">
-                    <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category">
-                    </p-radioButton>
-                    <label for="category3">Electronics</label>
-                </div>
-                <div class="p-field-radiobutton p-col-6">
-                    <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category">
-                    </p-radioButton>
-                    <label for="category4">Fitness</label>
+                <!-- <div class="p-field p-col">
+                    <label for="price">Price</label>
+                    <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="VND" locale="de-DE">
+                    </p-inputNumber>
+                </div> -->
+                <div class="p-field p-col">
+                    <label for="minmax">Số phòng</label>
+                    <p-inputNumber [(ngModel)]="product.roomNumber" mode="decimal" [showButtons]="true" inputId="minmax" [min]="0" [max]="1000">
+                    </p-inputNumber>
                 </div>
             </div>
-        </div>
-
-        <div class="p-formgrid p-grid">
-            <div class="p-field p-col">
-                <label for="price">Price</label>
-                <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US">
-                </p-inputNumber>
+        </ng-container>
+        <ng-container *ngIf="modalType==='setUp'">
+            <div class="p-field">
+                <label for="name">Name</label>
+                <input disabled type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !product.name">Name is required.</small>
             </div>
-            <div class="p-field p-col">
-                <label for="quantity">Quantity</label>
-                <p-inputNumber id="quantity" [(ngModel)]="product.quantity"></p-inputNumber>
+            
+            <div class="p-field">
+                <label class="p-mb-3">Kiểu</label>
+                <div class="p-formgrid p-grid">
+                    <div class="p-field-radiobutton p-col-6">
+                        <p-radioButton id="category1" name="type" value={{1}} (onClick)="handleFilterPrice(1)" [(ngModel)]="priceType">
+                        </p-radioButton>
+                        <label for="category1">Theo giờ</label>
+                    </div>
+                    <div class="p-field-radiobutton p-col-6">
+                        <p-radioButton id="category2" name="type" value={{2}} (onClick)="handleFilterPrice(2)" [(ngModel)]="priceType">
+                        </p-radioButton>
+                        <label for="category2">Qua đêm</label>
+                    </div>
+                    <div class="p-field-radiobutton p-col-6">
+                        <p-radioButton id="category2" name="type" value={{3}} (onClick)="handleFilterPrice(3)" [(ngModel)]="priceType">
+                        </p-radioButton>
+                        <label for="category2">Theo ngày</label>
+                    </div>
+                </div>
             </div>
-        </div>
+    
+            <div class="p-formgrid p-grid">
+                <div class="p-field p-col" *ngIf="priceType!=1">
+                    
+                    <label for="price">Giá <span *ngIf="priceType==2">(1 đêm)</span>
+                        <span *ngIf="priceType==3">(1 Ngày)</span>
+                    </label>
+                    <p-inputNumber id="price" [(ngModel)]="price.price" mode="currency" currency="VND" locale="de-DE">
+                    </p-inputNumber>
+                </div>
+                <div class="p-field p-col" *ngIf="priceType==1">
+                    
+                    <label for="price">Giá giờ đầu</label>
+                    <p-inputNumber id="price" [(ngModel)]="price.priceFirst" mode="currency" currency="VND" locale="de-DE">
+                    </p-inputNumber>
+                </div>
+                <div class="p-field p-col" *ngIf="priceType==1">
+                    
+                    <label for="price">Giá từ giờ thứ 2</label>
+                    <p-inputNumber id="price" [(ngModel)]="price.priceSecond" mode="currency" currency="VND" locale="de-DE">
+                    </p-inputNumber>
+                </div>
+       
+            </div>
+        </ng-container>
     </ng-template>
 
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
     </ng-template>
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '450px'}" [baseZIndex]="1000"></p-confirmDialog>
-<!-- <div id="tableCheckbox" class="col-lg-12 col-12 layout-spacing">
-
-
-    <div class="row mt-4">
-        <div class="col-xl-6 col-lg-7 col-md-7 col-sm-11 col-11 mx-auto">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg></span>
-                </div>
-                <input type="text" class="form-control" placeholder="Tên phòng" aria-label="Username"
-                    aria-describedby="basic-addon1">
-            </div>
-        </div>
-    </div>
-    <div class="statbox widget box box-shadow mt-2">
-        <div class="widget-header">
-
-
-        </div>
-        <div class="widget-content widget-content-area">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped table-checkable table-highlight-head mb-4">
-                    <thead>
-                        <tr>
-                            <th class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todoAll">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </th>
-                            <th class="">Name</th>
-                            <th class="">Date</th>
-                            <th class="">Sales</th>
-                            <th class="text-center">Icons</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todo-1">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <p class="mb-0">Shaun Park</p>
-                            </td>
-                            <td>10/08/2019</td>
-                            <td>320</td>
-
-                            <td class="text-center">
-                                <ul class="table-controls">
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-settings text-primary">
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                                <path
-                                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                                </path>
-                                            </svg></a> </li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-edit-2 text-success">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg></a></li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-trash-2 text-danger">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path
-                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                </path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg></a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todo-2">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <p class="mb-0">Alma Clarke</p>
-                            </td>
-                            <td>11/08/2019</td>
-                            <td>420</td>
-                            <td class="text-center">
-                                <ul class="table-controls">
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-settings text-primary">
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                                <path
-                                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                                </path>
-                                            </svg></a> </li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-edit-2 text-success">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg></a></li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-trash-2 text-danger">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path
-                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                </path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg></a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todo-3">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <p class="mb-0">Kelly Young</p>
-                            </td>
-                            <td>12/08/2019</td>
-                            <td>130</td>
-                            <td class="text-center">
-                                <ul class="table-controls">
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-settings text-primary">
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                                <path
-                                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                                </path>
-                                            </svg></a> </li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-edit-2 text-success">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg></a></li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-trash-2 text-danger">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path
-                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                </path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg></a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todo-4">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <p class="mb-0">Vincent Carpenter</p>
-                            </td>
-                            <td>13/08/2019</td>
-                            <td>260</td>
-                            <td class="text-center">
-                                <ul class="table-controls">
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-settings text-primary">
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                                <path
-                                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                                </path>
-                                            </svg></a> </li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-edit-2 text-success">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg></a></li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-trash-2 text-danger">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path
-                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                </path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg></a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="checkbox-column">
-                                <label class="new-control new-checkbox checkbox-primary"
-                                    style="height: 18px; margin: 0 auto;">
-                                    <input type="checkbox" class="new-control-input todochkbox" id="todo-5">
-                                    <span class="new-control-indicator"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <p class="mb-0">Andy King</p>
-                            </td>
-                            <td>14/08/2019</td>
-                            <td>180</td>
-                            <td class="text-center">
-                                <ul class="table-controls">
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Settings"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-settings text-primary">
-                                                <circle cx="12" cy="12" r="3"></circle>
-                                                <path
-                                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                                                </path>
-                                            </svg></a> </li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-edit-2 text-success">
-                                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z">
-                                                </path>
-                                            </svg></a></li>
-                                    <li><a href="javascript:void(0);" data-toggle="tooltip" data-placement="top"
-                                            title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-trash-2 text-danger">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path
-                                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                </path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg></a></li>
-                                </ul>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-        </div>
-    </div>
-</div> -->

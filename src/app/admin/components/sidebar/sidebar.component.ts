@@ -1,15 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService, Role, User } from 'src/app/core';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css']
+  styleUrls: ['./sidebar.component.css'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  user: User;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private authenticationService: AuthenticationService) {
+    this.authenticationService.user.subscribe((x) => (this.user = x));
   }
 
+  get isAdmin() {
+    return this.user && this.user.role === Role.Admin;
+  }
+
+  logout() {
+    this.authenticationService.logout();
+  }
 }

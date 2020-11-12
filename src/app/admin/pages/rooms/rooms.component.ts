@@ -1,83 +1,140 @@
 import { Component, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
-import { Room } from 'src/app/core';
-
+import { ConfirmationService, MessageService, PrimeNGConfig } from 'primeng/api';
+import { BookingService, FloorService, Room, RoomService } from '../../../core';
+import { environment } from '../../../../environments/environment';
+import { DatePipe } from '@angular/common';
 @Component({
-  selector: 'app-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.css'],
+    selector: 'app-rooms',
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.css'],
 })
 export class RoomsComponent implements OnInit {
-  visibleSidebar: any;
-  active: any;
-  visibleSidebar2: any;
-  RoomActive: any;
-  rooms = [
-    {
-      id: 1,
-      name: 'Phòng 101',
-      floor: 1,
+    productDialog: boolean;
+    submitted: boolean;
+    visibleSidebar: any;
+    active: any;
+    visibleSidebar2: any;
+    RoomActive: any;
+    urlAPI = environment.apiUrlImg;
+    errorMessage: any;
+    loading: boolean;
+    activeFloor: any;
+    floors: any;
+    rooms: any;
+    booking: any;
+    constructor(private primengConfig: PrimeNGConfig,
+        private messageService: MessageService,
+        private confirmationService: ConfirmationService,
+        private bookingService: BookingService,
+        private roomService: RoomService,
+        private floorService: FloorService
+    ) {
+        this.activeFloor = 0
+    }
 
-      image: 'normal_11-571252810.jpg',
-      price: 200000,
-      status: 1,
-    },
-    {
-      id: 2,
-      floor: 1,
+    ngOnInit(): void {
+        this.primengConfig.ripple = true;
+        this.loading = true;
+        this.floorService.getAll().subscribe(
+            (response) => {
+                this.floors = response;
+            },
+            (error) => {
+                this.errorMessage = error;
+                this.loading = false;
+            },
+            () => {
+                this.loading = false;
+            }
+        );
+        this.getAll();
+    }
+    getTimeCountDown(bookingTimeStart) {
+        let startDate = new Date(bookingTimeStart);
+        let endDate = new Date();
+        let diff = (startDate.getTime() - endDate.getTime()) / 1000;
+        diff /= 60;
 
-      name: 'Phòng 102',
-      image: '429f6596e21902abaaadb5fa60bdfb81.jpg',
-      status: 2,
-      price: 200000,
-    },
-    {
-      id: 3,
-      floor: 1,
-      name: 'Phòng 103',
-      image:
-        'a25-hotel-45-phan-chu-trinh-khach-san-2-sao-quan-hoan-kiem-ha-noi.jpg',
-      price: 200000,
-      status: 3,
-    },
-    {
-      id: 4,
-      name: 'Phòng 104',
-      image: 'imagesRoom1.jpg',
-      floor: 1,
-      price: 200000,
-      status: 4,
-    },
-    {
-      id: 5,
-      name: 'Phòng 201',
-      image: 'images.jpg',
-      price: 200000,
-      floor: 2,
-      status: 1,
-    },
-    {
-      id: 6,
-      name: 'Phòng 202',
-      image: 'phong-2-nguoi-khach-san-moran.jpg',
-      price: 200000,
-      status: 2,
-      floor: 2,
-    },
-  ];
+        if (diff > 0) {
+            if (startDate.getHours() >= endDate.getHours()) {
+                diff = diff * 60;
+            }
+            diff = Math.round(diff)
 
-  constructor(private primengConfig: PrimeNGConfig) {}
 
-  ngOnInit(): void {
-    this.primengConfig.ripple = true;
-  }
-  changeStatusSideBar(room) {
-    // debugger;
-    this.active = room.id;
-    this.RoomActive = room;
-    this.visibleSidebar = true;
-  }
-  visibleChanged(visible) {
-    this.visibleSidebar = visible;
-  }
+        } else {
+
+            diff = 0
+        }
+        return diff
+    }
+    getAll() {
+        this.roomService.getByFloor(0).subscribe(
+            (response) => {
+                this.rooms = response;
+                this.rooms.map(x => x.booking ? x.booking.timeCaculatar = this.getTimeCountDown(x.booking.bookingTimeStart) : '')
+            },
+            (error) => {
+                this.errorMessage = error;
+                this.loading = false;
+            },
+            () => {
+                this.loading = false;
+            }
+        );
+    }
+
+    handleEvent(e, room: Room) {
+        if (e.action === "done") {
+
+            this.roomService.changeStatus(parseInt(room.id), 1).subscribe(
+                (response) => {
+                    // this.hideDialog();
+                    this.visibleSidebar = false;
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Thành công',
+                        detail: '',
+                        life: 3000,
+                    });
+                    this.getAll();
+
+                }
+            );
+        }
+
+    }
+    changeStatusSideBar(room) {
+
+        this.visibleSidebar = true;
+
+        this.active = room.id;
+        this.RoomActive = room;
+
+    }
+    visibleChanged(visible) {
+        this.visibleSidebar = visible;
+    }
+    hideDialog() {
+        this.productDialog = false;
+        this.submitted = false;
+    }
+    public getByFloor(id_floor) {
+        this.loading = true;
+        this.errorMessage = '';
+        this.activeFloor = id_floor;
+        this.roomService.getByFloor(id_floor).subscribe(
+            (response) => {
+                this.rooms = response;
+                this.rooms.map(x => x.booking ? x.booking.timeCaculatar = this.getTimeCountDown(x.booking.bookingTimeStart) : '')
+            },
+            (error) => {
+                this.errorMessage = error;
+                this.loading = false;
+            },
+            () => {
+                this.loading = false;
+            }
+        );
+    }
 }

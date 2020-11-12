@@ -24,9 +24,7 @@ export class AdminComponent {
     private tokenStorageService: TokenStorageService
   ) {
     //add
-    this.authenticationService.currentUser.subscribe(
-      (x) => (this.currentUser = x)
-    );
+    this.authenticationService.user.subscribe((x) => (this.currentUser = x));
   }
   //old
   // ngOnInit(): void {
