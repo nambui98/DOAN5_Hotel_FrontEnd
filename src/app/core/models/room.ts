@@ -1,18 +1,12 @@
-import { Booking } from './booking';
-import { Floor } from './floor';
-import { RoomPrice } from './RoomPrice';
-
 export interface Room {
   id?: string;
-  idFloor?: number;
+  code?: string;
   name?: string;
-  roomNumber?: number;
+  description?: string;
   price?: number;
-  createdBy?: string;
-  status?: number;
+  quantity?: number;
+  inventoryStatus?: string;
+  category?: string;
   image?: string;
-  type?: number;
-  floor?:Floor;
-  booking?:Booking;
-  prices?:RoomPrice[]
+  rating?: number;
 }

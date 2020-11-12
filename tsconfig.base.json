@@ -12,10 +12,9 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
-    "paths": {
-      "@app/*": ["src/app/*"],
-      "@environments/*": ["src/environments/*"]
-    }
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   }
 }

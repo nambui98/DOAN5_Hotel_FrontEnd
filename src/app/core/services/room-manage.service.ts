@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Room, RoomPrice } from '../models';
-import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Room } from '../models';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -45,38 +43,16 @@ export class RoomManageService {
 
   constructor(private http: HttpClient) {}
 
-  addnew(room:Room) {
-    debugger
-    room.idFloor=room.floor.id;
-    room.createdBy=JSON.parse(localStorage.getItem('user')).id;
-    room.status=1;
-    room.floor=null;
+  getProductsSmall() {
     return this.http
-      .post<any>(`${environment.apiUrl}/rooms`, 
-       room
-      )
-      
+      .get<any>('assets/products-small.json')
+      .toPromise()
+      .then((res) => <Room[]>res.data)
+      .then((data) => {
+        return data;
+      });
   }
-  update(room:Room) {
-    room.idFloor=room.floor.id;
-    room.createdBy=JSON.parse(localStorage.getItem('user')).id;
-    room.status=1;
-    room.floor=null;
-    return this.http
-      .put<any>(`${environment.apiUrl}/rooms/${room.id}`, 
-       room
-      )  
-  }
-  delete(room:Room) {
-    debugger
-    return this.http
-      .delete<any>(`${environment.apiUrl}/rooms/${room.id}`)  
-  }
-  getAll(): Observable<Room[]> {
-    return this.http.get<Room[]>(
-      `${environment.apiUrl}/rooms`
-    );
-  }
+
   getProducts() {
     return this.http
       .get<any>('assets/test/products.json')
@@ -101,12 +77,12 @@ export class RoomManageService {
     const product: Room = {
       id: this.generateId(),
       name: this.generateName(),
-      // description: 'Product Description',
+      description: 'Product Description',
       price: this.generatePrice(),
-      // quantity: this.generateQuantity(),
-      // category: 'Product Category',
-      // inventoryStatus: this.generateStatus(),
-      // rating: this.generateRating(),
+      quantity: this.generateQuantity(),
+      category: 'Product Category',
+      inventoryStatus: this.generateStatus(),
+      rating: this.generateRating(),
     };
 
     product.image =
@@ -144,10 +120,5 @@ export class RoomManageService {
 
   generateRating() {
     return Math.floor(Math.random() * Math.floor(5) + 1);
-  }
-  setUpPrice(id_room:number, roomPrice:RoomPrice): Observable<Room[]> {
-    return this.http.put<Room[]>(
-      `${environment.apiUrl}/rooms/setUpPrice/${id_room}`,roomPrice
-    );
   }
 }

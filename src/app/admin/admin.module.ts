@@ -56,10 +56,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { StaffComponent } from './pages/staff/staff.component';
-import { FloorsComponent } from './pages/floors/floors.component';
-import { FurnitureComponent } from './pages/furniture/furniture.component';
-import { CountdownModule } from 'ngx-countdown';
 FullCalendarModule.registerPlugins([
   // register FullCalendar plugins
   dayGridPlugin,
@@ -85,9 +81,6 @@ FullCalendarModule.registerPlugins([
     RoomManageComponent,
     RightSidebarComponent,
     TimekeepingComponent,
-    StaffComponent,
-    FloorsComponent,
-    FurnitureComponent,
 
     // ClientComponent,
   ],
@@ -121,7 +114,6 @@ FullCalendarModule.registerPlugins([
     InputNumberModule,
     ConfirmDialogModule,
     InputTextareaModule,
-    CountdownModule 
   ],
   providers: [
     authInterceptorProviders,

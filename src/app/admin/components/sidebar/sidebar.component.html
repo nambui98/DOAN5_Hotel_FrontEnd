@@ -20,8 +20,8 @@
 
             </li>
 
-            <li class="menu" *ngIf="isAdmin">
-                <a href="#room" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <li class="menu">
+                <a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -47,58 +47,36 @@
                         </svg>
                     </div>
                 </a>
-                <ul class="collapse submenu list-unstyled" id="room" data-parent="#accordionExample">
-                    <li >
+                <ul class="collapse submenu list-unstyled" id="app" data-parent="#accordionExample">
+                    <li class="active">
                         <a routerLink="/admin/folow-rooms" routerLinkActive="active">Theo dõi phòng </a>
                     </li>
                     <li>
                         <a routerLink="/admin/rooms"> Quản lý phòng </a>
                     </li>
                     <li>
-                        <a routerLink="/admin/furnitures"> Quản lý đồ đạc </a>
+                        <a href="apps_todoList.html"> Todo List </a>
                     </li>
                     <li>
-                        <a routerLink="/admin/floors"> Quản lý Tầng </a>
+                        <a href="apps_notes.html"> Notes </a>
+                    </li>
+                    <li>
+                        <a href="apps_scrumboard.html">Scrumboard</a>
+                    </li>
+                    <li>
+                        <a href="apps_contacts.html"> Contacts </a>
+                    </li>
+                    <li>
+                        <a href="apps_invoice.html"> Invoice List </a>
+                    </li>
+                    <li>
+                        <a href="apps_calendar.html"> Calendar </a>
                     </li>
                 </ul>
             </li>
-            <li class="menu">
-                <a href="#kitchen" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-cpu">
-                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                            <line x1="9" y1="1" x2="9" y2="4"></line>
-                            <line x1="15" y1="1" x2="15" y2="4"></line>
-                            <line x1="9" y1="20" x2="9" y2="23"></line>
-                            <line x1="15" y1="20" x2="15" y2="23"></line>
-                            <line x1="20" y1="9" x2="23" y2="9"></line>
-                            <line x1="20" y1="14" x2="23" y2="14"></line>
-                            <line x1="1" y1="9" x2="4" y2="9"></line>
-                            <line x1="1" y1="14" x2="4" y2="14"></line>
-                        </svg>
-                        <span>Quản lý nhà bếp</span>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="kitchen" data-parent="#accordionExample">
 
-                    <li>
-                        <a routerLink="/admin/folow-rooms" routerLinkActive="active">Danh sách đặt món </a>
-                    </li>
-
-                </ul>
-            </li>
             <li class="menu">
-                <a routerLink="staff" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <a href="#components" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -112,28 +90,6 @@
                         <span>Quản trị viên</span>
                     </div>
 
-                </a>
-
-            </li>
-            <li class="menu">
-                <a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-cpu">
-                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                            <line x1="9" y1="1" x2="9" y2="4"></line>
-                            <line x1="15" y1="1" x2="15" y2="4"></line>
-                            <line x1="9" y1="20" x2="9" y2="23"></line>
-                            <line x1="15" y1="20" x2="15" y2="23"></line>
-                            <line x1="20" y1="9" x2="23" y2="9"></line>
-                            <line x1="20" y1="14" x2="23" y2="14"></line>
-                            <line x1="1" y1="9" x2="4" y2="9"></line>
-                            <line x1="1" y1="14" x2="4" y2="14"></line>
-                        </svg>
-                        <span>Quản lý thực đơn</span>
-                    </div>
                 </a>
 
             </li>
@@ -283,9 +239,17 @@
                     <li>
                         <a href="auth_login_boxed.html"> Quyền </a>
                     </li>
-
+                    <li>
+                        <a href="auth_register_boxed.html"> Quản lý Tầng </a>
+                    </li>
                     <li>
                         <a href="auth_lockscreen_boxed.html"> Quản lý đồ đạc </a>
+                    </li>
+                    <li>
+                        <a href="auth_pass_recovery_boxed.html"> Quản lý thực đơn </a>
+                    </li>
+                    <li>
+                        <a href="auth_login.html"> Quản lý nhà bếp </a>
                     </li>
 
                 </ul>

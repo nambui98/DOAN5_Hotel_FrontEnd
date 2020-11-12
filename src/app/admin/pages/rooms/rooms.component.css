@@ -1,12 +1,7 @@
 /*
 	Component Card 1
 */
-.active{
-  background: #fff;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 6px;
-  color: #0e1726;
-}
+
 .component-card_1 {
   border: 1px solid #e0e6ed;
   border-radius: 6px;
@@ -59,21 +54,11 @@
 .activeCard .card-img-top {
   padding: 0;
 }
-.activeCard > .roomvip {
-  right: 0 !important;
-}
 .component-card_2:hover {
   border: 10px solid;
 }
 .component-card_2:hover .card-img-top {
   padding: 0;
-}
-.component-card_2 .roomvip {
-  position: absolute;
-  right: 10px;
-}
-.component-card_2:hover .roomvip {
-  right: 0;
 }
 .component-card_2 .card-body {
   padding: 22px 20px;

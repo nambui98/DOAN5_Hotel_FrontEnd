@@ -154,34 +154,34 @@ $('.widget-content .timer').on('click', function () {
   })
 })
 
-// $('.widget-content .chaining-modals').on('click', function () {
-//   swal.mixin({
-//     input: 'text',
-//     confirmButtonText: 'Next &rarr;',
-//     showCancelButton: true,
-//     progressSteps: ['1', '2', '3'],
-//     padding: '2em',
-//   }).queue([
-//     {
-//       title: 'Question 1',
-//       text: 'Chaining swal2 modals is easy'
-//     },
-//     'Question 2',
-//     'Question 3'
-//   ]).then(function(result) {
-//     if (result.value) {
-//       swal({
-//         title: 'All done!',
-//         padding: '2em',
-//         html:
-//           'Your answers: <pre>' +
-//             JSON.stringify(result.value) +
-//           '</pre>',
-//         confirmButtonText: 'Lovely!'
-//       })
-//     }
-//   })
-// })
+$('.widget-content .chaining-modals').on('click', function () {
+  swal.mixin({
+    input: 'text',
+    confirmButtonText: 'Next &rarr;',
+    showCancelButton: true,
+    progressSteps: ['1', '2', '3'],
+    padding: '2em',
+  }).queue([
+    {
+      title: 'Question 1',
+      text: 'Chaining swal2 modals is easy'
+    },
+    'Question 2',
+    'Question 3'
+  ]).then(function(result) {
+    if (result.value) {
+      swal({
+        title: 'All done!',
+        padding: '2em',
+        html:
+          'Your answers: <pre>' +
+            JSON.stringify(result.value) +
+          '</pre>',
+        confirmButtonText: 'Lovely!'
+      })
+    }
+  })
+})
 
 $('.widget-content .dynamic-queue').on('click', function () {
   const ipAPI = 'https://api.ipify.org?format=json'
